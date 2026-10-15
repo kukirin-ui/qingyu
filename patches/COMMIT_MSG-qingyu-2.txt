@@ -1,0 +1,14 @@
+test(core): skip Windows-only root provisioning tests on Linux
+
+Mark the two tests in core/tests/test_r1_root_provisioning.py that need
+real Windows APIs with skipif(sys.platform != "win32"):
+
+- test_pin_requires_independent_fingerprint_before_any_host_write:
+  install_public_pin imports the real winreg module.
+- test_registry_creation_race_rejects_existing_key_disposition:
+  patches ctypes.WinDLL, which exists only on Windows.
+
+The other 13 tests stay portable and pass on Linux, so the file is
+added to ci/core-portable-tests.txt.
+
+Closes #2
