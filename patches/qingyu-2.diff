@@ -1,0 +1,32 @@
+diff --git a/ci/core-portable-tests.txt b/ci/core-portable-tests.txt
+index 5552469..837c7eb 100644
+--- a/ci/core-portable-tests.txt
++++ b/ci/core-portable-tests.txt
+@@ -23,6 +23,7 @@ core/tests/test_r1_private_config_harness.py
+ core/tests/test_r1_protocol.py
+ core/tests/test_r1_provisioning.py
+ core/tests/test_r1_root_pin.py
++core/tests/test_r1_root_provisioning.py
+ core/tests/test_r1_runtime_unit.py
+ core/tests/test_r1_schema.py
+ core/tests/test_r1_schema_snapshot.py
+diff --git a/core/tests/test_r1_root_provisioning.py b/core/tests/test_r1_root_provisioning.py
+index bde852c..5a6897d 100644
+--- a/core/tests/test_r1_root_provisioning.py
++++ b/core/tests/test_r1_root_provisioning.py
+@@ -165,6 +165,7 @@ def test_private_directory_acl_preflight_covers_read_and_replacement(tmp_path, m
+     assert "PropagationFlags]::InheritOnly" in scripts[0]
+ 
+ 
++@pytest.mark.skipif(sys.platform != "win32", reason="imports the real winreg module, Windows only")
+ def test_pin_requires_independent_fingerprint_before_any_host_write(tmp_path, monkeypatch):
+     raw, fingerprint = _public_key()
+     export = tmp_path / "transfer.pub"
+@@ -214,6 +215,7 @@ def test_empty_existing_64_bit_key_fails_closed(tmp_path, monkeypatch):
+         ceremony.install_public_pin(export, fingerprint)
+ 
+ 
++@pytest.mark.skipif(sys.platform != "win32", reason="patches ctypes.WinDLL, which exists only on Windows")
+ def test_registry_creation_race_rejects_existing_key_disposition(monkeypatch):
+     closed = []
+ 
